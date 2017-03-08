@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
 var fs = require('fs');
 var path = require('path');
 var sha1 = require('sha1');
+var express = require('express');
+var router = express.Router();
 
 var UserModel = require('../models/users');
 var checkNotLogin = require('../middlewares/check').checkNotLogin;
@@ -19,12 +19,12 @@ router.post('/', checkNotLogin, function(req, res, next) {
   var bio = req.fields.bio;
   var avatar = req.files.avatar.path.split(path.sep).pop();
   var password = req.fields.password;
-  var repasssword = req.fields.repasssword;
+  var repassword = req.fields.repassword;
 
   // 校验参数
   try {
-    if(!(name.length >=1 && name.length <= 10)) {
-      throw new Error('名字请限制在 1-10个字符');
+    if (!(name.length >= 1 && name.length <= 10)) {
+      throw new Error('名字请限制在 1-10 个字符');
     }
     if (['m', 'f', 'x'].indexOf(gender) === -1) {
       throw new Error('性别只能是 m、f 或 x');
@@ -43,7 +43,10 @@ router.post('/', checkNotLogin, function(req, res, next) {
     }
   } catch (e) {
     // 注册失败，异步删除上传的头像
-    fs.unlink(req.files.avatar.path);
+    fs.unlink(req.files.avatar.path,(err) =>{
+        console.log(avatar);
+        console.log(err);
+    });
     req.flash('error', e.message);
     return res.redirect('/signup');
   }
@@ -72,7 +75,7 @@ router.post('/', checkNotLogin, function(req, res, next) {
       // 跳转到首页
       res.redirect('/posts');
     })
-    .catch(function(e) {
+    .catch(function (e) {
       // 注册失败，异步删除上传的头像
       fs.unlink(req.files.avatar.path);
       // 用户名被占用则跳回注册页，而不是错误页
