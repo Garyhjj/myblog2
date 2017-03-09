@@ -3,7 +3,7 @@ module.exports = {
   session: {
     secret: 'myblog',
     key: 'myblog',
-    maxAge: 1000*60*30
+    maxAge: 1000*60*5
   },
   mongodb: 'mongodb://localhost:27017/myblog'
 };
